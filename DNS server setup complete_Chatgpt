@@ -1,0 +1,1164 @@
+Skip to content
+Chat history
+
+You said:
+code@dns:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           824M  1.5M  822M   1% /run
+/dev/sda3        39G   11G   26G  30% /
+tmpfs           4.1G     0  4.1G   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+/dev/sda2       512M  6.1M  506M   2% /boot/efi
+tmpfs           824M  100K  824M   1% /run/user/1000
+code@dns:~$
+code@dns:~$ su - root
+Password:
+root@dns:~#
+root@dns:~# ip r s
+default via 192.168.0.1 dev enp0s3 proto dhcp metric 100
+default via 10.0.3.2 dev enp0s8 proto dhcp metric 101
+10.0.3.0/24 dev enp0s8 proto kernel scope link src 10.0.3.15 metric 101
+169.254.0.0/16 dev enp0s8 scope link metric 1000
+192.168.0.0/24 dev enp0s3 proto kernel scope link src 192.168.0.128 metric 100
+root@dns:~#
+root@dns:~# hostname
+dns
+root@dns:~#
+root@dns:~# hostnamectl
+ Static hostname: dns
+       Icon name: computer-vm
+         Chassis: vm
+      Machine ID: 989c4e81c74b4986b2001907326d738b
+         Boot ID: 78c8f9c375d6430ab66c696f5a350adb
+  Virtualization: oracle
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 6.8.0-85-generic
+    Architecture: x86-64
+ Hardware Vendor: innotek GmbH
+  Hardware Model: VirtualBox
+root@dns:~#
+root@dns:~# sudo nano /etc/netplan/01-netcfg.yaml
+root@dns:~# sudo cat /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.0.128/24]
+      nameservers:
+        addresses:
+      routes:
+        - to: default
+          via: 192.168.0.1
+root@dns:~#
+root@dns:~# sudo apt update
+Hit:1 http://in.archive.ubuntu.com/ubuntu jammy InRelease
+Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:3 http://in.archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:4 http://in.archive.ubuntu.com/ubuntu jammy-backports InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+263 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo apt install bind9 dnsutils bind9utils -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  bind9-dnsutils bind9-host bind9-libs bind9-utils
+Suggested packages:
+  bind-doc resolvconf
+The following NEW packages will be installed:
+  bind9 bind9-utils bind9utils dnsutils
+The following packages will be upgraded:
+  bind9-dnsutils bind9-host bind9-libs
+3 upgraded, 4 newly installed, 0 to remove and 260 not upgraded.
+Need to get 434 kB/1,908 kB of archives.
+After this operation, 1,831 kB of additional disk space will be used.
+Get:1 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 bind9-utils amd64 1:9.18.39-0ubuntu0.22.04.1 [162 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 bind9 amd64 1:9.18.39-0ubuntu0.22.04.1 [265 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 bind9utils all 1:9.18.39-0ubuntu0.22.04.1 [3,920 B]
+Get:4 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 dnsutils all 1:9.18.39-0ubuntu0.22.04.1 [3,916 B]
+Fetched 434 kB in 2s (258 kB/s)
+(Reading database ... 182911 files and directories currently installed.)
+Preparing to unpack .../0-bind9-host_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-host (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Preparing to unpack .../1-bind9-dnsutils_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-dnsutils (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Preparing to unpack .../2-bind9-libs_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-libs:amd64 (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9-utils.
+Preparing to unpack .../3-bind9-utils_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9.
+Preparing to unpack .../4-bind9_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9 (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9utils.
+Preparing to unpack .../5-bind9utils_1%3a9.18.39-0ubuntu0.22.04.1_all.deb ...
+Unpacking bind9utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package dnsutils.
+Preparing to unpack .../6-dnsutils_1%3a9.18.39-0ubuntu0.22.04.1_all.deb ...
+Unpacking dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-libs:amd64 (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9 (1:9.18.39-0ubuntu0.22.04.1) ...
+Adding group bind' (GID 137) ...
+Done.
+Adding system user bind' (UID 130) ...
+Adding new user bind' (UID 130) with group bind' ...
+Not creating home directory /var/cache/bind'.
+wrote key file "/etc/bind/rndc.key"
+named-resolvconf.service is a disabled or a static unit, not starting it.
+Created symlink /etc/systemd/system/bind9.service → /lib/systemd/system/named.service.
+Created symlink /etc/systemd/system/multi-user.target.wants/named.service → /lib/systemd/system/named.service.
+Setting up bind9utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-host (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+Processing triggers for ufw (0.36.1-4ubuntu0.1) ...
+Processing triggers for man-db (2.10.2-1) ...
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.options
+root@dns:~# sudo cat /etc/bind/named.conf.options
+options {
+    directory "/var/cache/bind";
+    allow-query { localhost; 192.168.0.0/24; };
+    recursion yes;
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+    };
+};
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.local
+root@dns:~# sudo cat /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+// Define a forward lookup zone for your local domain
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/db.localdomain.lan";
+};
+
+// Define a reverse lookup zone for your local network (192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.0";
+};
+root@dns:~#
+root@dns:~# sudo mkdir /etc/bind/zones
+root@dns:~#
+root@dns:~# sudo cp /etc/bind/db.local /etc/bind/zones/db.localdomain.lan
+sudo cp /etc/bind/db.127 /etc/bind/zones/db.192.168.0
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/zones/db.localdomain.lan
+root@dns:~# sudo cat /etc/bind/zones/db.localdomain.lan
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      2         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+dns     IN      A       192.168.0.128
+
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/zones/db.192.168.0
+root@dns:~# sudo cat /etc/bind/zones/db.192.168.0
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      2         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+128     IN      PTR     dns.localdomain.lan.
+
+root@dns:~#
+root@dns:~# sudo named-checkconf
+root@dns:~#
+root@dns:~# sudo named-checkzone localdomain.lan /etc/bind/zones/db.localdomain.lan
+sudo named-checkzone 0.168.192.in-addr.arpa /etc/bind/zones/db.192.168.0
+zone localdomain.lan/IN: loaded serial 2
+OK
+zone 0.168.192.in-addr.arpa/IN: loaded serial 2
+OK
+root@dns:~# sudo systemctl restart bind9
+root@dns:~#
+root@dns:~# sudo ufw allow Bind9
+sudo ufw reload
+Rule added
+Rule added (v6)
+
+Firewall reloaded
+root@dns:~#
+root@dns:~#
+root@dns:~# dig dns.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> dns.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 51457
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 0a0e1e80ef3e1a9b0100000068f11c4a2ded8ecb900764de (good)
+;; QUESTION SECTION:
+;dns.localdomain.lan.           IN      A
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:54:42 IST 2025
+;; MSG SIZE  rcvd: 76
+
+root@dns:~# sudo chown -R bind:bind /etc/bind/zones
+root@dns:~# sudo chmod -R 755 /etc/bind/zones
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.local
+root@dns:~# sudo cat /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+// Define a forward lookup zone for your local domain
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/zones/db.localdomain.lan";
+};
+
+// Define a reverse lookup zone for your local network (192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.192.168.0";
+};
+
+root@dns:~# sudo systemctl restart bind9
+root@dns:~#
+root@dns:~# sudo systemctl status bind9
+● named.service - BIND Domain Name Server
+     Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2025-10-16 21:56:21 IST; 4s ago
+       Docs: man:named(8)
+    Process: 7251 ExecStart=/usr/sbin/named $OPTIONS (code=exited, status=0/SUCCESS)
+   Main PID: 7258 (named)
+      Tasks: 6 (limit: 9785)
+     Memory: 23.0M
+        CPU: 85ms
+     CGroup: /system.slice/named.service
+             └─7258 /usr/sbin/named -u bind
+
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 192.203.230.10#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 202.12.27.33#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 202.12.27.33#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 192.36.148.17#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 192.36.148.17#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 170.247.170.2#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 170.247.170.2#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 199.7.83.42#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 199.7.83.42#53
+Oct 16 21:56:21 dns named[7258]: resolver priming query complete: failure
+root@dns:~#
+root@dns:~# sudo journalctl -u bind9 --no-pager
+-- No entries --
+root@dns:~#
+root@dns:~# dig dns.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> dns.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 58105
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 7ada8c4cc857421b0100000068f11cbdcecb15debddf237c (good)
+;; QUESTION SECTION:
+;dns.localdomain.lan.           IN      A
+
+;; ANSWER SECTION:
+dns.localdomain.lan.    604800  IN      A       192.168.0.128
+
+;; Query time: 2 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:56:37 IST 2025
+;; MSG SIZE  rcvd: 92
+
+root@dns:~#
+root@dns:~# dig google.com @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> google.com @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35925
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 8bac8ba11df9e54b0100000068f11cf085ab39e58dd63277 (good)
+;; QUESTION SECTION:
+;google.com.                    IN      A
+
+;; ANSWER SECTION:
+google.com.             208     IN      A       142.250.70.46
+
+;; Query time: 51 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:57:28 IST 2025
+;; MSG SIZE  rcvd: 83
+
+root@dns:~#
+
+is DNS server setup complete
+ChatGPT said:
+✅ Yes — your DNS server setup is complete and working correctly.
+
+Here’s the breakdown confirming it:
+
+🧩 1. Local Zone (Forward Lookup)
+You created:
+
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/zones/db.localdomain.lan";
+};
+and your zone file /etc/bind/zones/db.localdomain.lan defines:
+
+dns     IN      A       192.168.0.128
+✅ Tested successfully:
+
+dig dns.localdomain.lan @127.0.0.1
+Result: NOERROR and correct IP → 192.168.0.128.
+
+🔁 2. Reverse Zone
+You configured:
+
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.192.168.0";
+};
+Zone file contains:
+
+128     IN      PTR     dns.localdomain.lan.
+✅ named-checkzone returned OK → syntax and references are correct.
+
+You can also test it:
+
+dig -x 192.168.0.128 @127.0.0.1
+Expected result:
+
+dns.localdomain.lan.
+🌐 3. Forwarders Working
+Your /etc/bind/named.conf.options:
+
+forwarders {
+    8.8.8.8;
+    8.8.4.4;
+};
+✅ Tested with:
+
+dig google.com @127.0.0.1
+Result: NOERROR and valid IP — confirms forwarding and recursion are working fine.
+
+🧱 4. Service Health
+sudo systemctl status bind9
+✅ Shows active (running) with no critical errors.
+
+🔐 5. Permissions
+You applied:
+
+sudo chown -R bind:bind /etc/bind/zones
+sudo chmod -R 755 /etc/bind/zones
+✅ Ensures BIND can read its zone files.
+
+📶 6. Firewall
+You allowed DNS through ufw:
+
+sudo ufw allow Bind9
+✅ Good practice — ensures DNS is reachable from your LAN.
+
+✅ Final Verification Checklist
+Test	Command	Expected
+Local DNS resolution	dig dns.localdomain.lan @127.0.0.1	✅ IP = 192.168.0.128
+Reverse lookup	dig -x 192.168.0.128 @127.0.0.1	✅ PTR = dns.localdomain.lan
+Internet forwarding	dig google.com @127.0.0.1	✅ Returns valid Google IP
+Service status	systemctl status bind9	✅ active (running)
+Zone syntax	named-checkconf && named-checkzone localdomain.lan /etc/bind/zones/db.localdomain.lan	✅ OK
+🎯 You’re Done!
+Your DNS server is fully functional for:
+
+Internal name resolution (*.localdomain.lan)
+
+Reverse lookup
+
+Forwarding external queries (Google DNS fallback)
+
+Would you like me to give you a ready-to-share documentation (Markdown or PDF) version of this DNS setup and verification steps (for your manager or project record)?
+
+You said:
+I dont understand how you can say this is DNS server
+ChatGPT said:
+That’s a great question — and you’re right to ask it.
+Let’s carefully go step-by-step so you see exactly how this machine is functioning as a DNS server, not just that “it works.”
+
+🧠 What Makes a System a DNS Server?
+A DNS server (Domain Name System server) is a system that:
+
+Listens on port 53 (UDP/TCP) for DNS queries.
+
+Resolves domain names to IP addresses (and vice versa).
+
+Optionally, forwards unknown queries to upstream DNS servers (like 8.8.8.8).
+
+Publishes its own DNS zones — meaning it’s the authority for specific domains.
+
+Your setup with BIND9 satisfies all four points.
+
+🔍 1. BIND9 Installed and Running as a DNS Service
+You installed:
+
+sudo apt install bind9 dnsutils bind9utils -y
+and confirmed it’s running:
+
+systemctl status bind9
+→ ✅ active (running)
+
+That means named (the BIND9 daemon) is actively listening on port 53.
+
+You can verify:
+
+sudo ss -lntup | grep named
+Expected output:
+
+udp   UNCONN  0 0 0.0.0.0:53   ...  named
+tcp   LISTEN  0 0 0.0.0.0:53   ...  named
+✔️ The machine is now a DNS service endpoint.
+
+🗺️ 2. It Hosts a Custom DNS Zone (Your Own Domain)
+You defined:
+
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/zones/db.localdomain.lan";
+};
+and inside that file:
+
+dns IN A 192.168.0.128
+This makes your server the authoritative source for the domain localdomain.lan.
+In other words:
+
+Any computer that asks this server about dns.localdomain.lan gets the official answer from your configuration.
+
+🔁 3. It Performs Reverse Lookups
+You defined:
+
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.192.168.0";
+};
+and inside:
+
+128 IN PTR dns.localdomain.lan.
+Now the server can map an IP → hostname.
+That’s a key DNS function for networked environments.
+
+🌐 4. It Forwards Internet DNS Queries
+Your named.conf.options includes:
+
+forwarders {
+    8.8.8.8;
+    8.8.4.4;
+};
+recursion yes;
+So, if someone asks your DNS server about google.com,
+and you’re not authoritative for it,
+the query is automatically forwarded to Google’s public DNS —
+and the result is cached locally for faster future responses.
+
+You tested that:
+
+dig google.com @127.0.0.1
+✅ It returned a valid IP → your BIND server successfully resolved an external domain.
+
+🧩 5. It Answers Queries from Other Machines
+In /etc/bind/named.conf.options you allowed:
+
+allow-query { localhost; 192.168.0.0/24; };
+That means any host in your LAN (192.168.0.x) can use this system’s IP (192.168.0.128) as its DNS server in /etc/resolv.conf or network settings.
+
+Example from another client:
+
+dig dns.localdomain.lan @192.168.0.128
+✅ You’ll get the same reply, proving your machine is serving the network.
+
+🧱 6. Summary: What You Have Built
+Component	Purpose	Verified
+BIND9 service	Core DNS daemon	✅ running
+Forward zone (localdomain.lan)	Resolves hostnames to IPs	✅ works
+Reverse zone	Resolves IPs to hostnames	✅ configured
+Forwarders	Sends external queries to Google DNS	✅ works
+Recursion	Caches and answers queries	✅ yes
+Access control	Limits to LAN + localhost	✅ yes
+Firewall rule	Allows DNS traffic	✅ yes
+✅ Therefore, this machine is a fully functional DNS server — both authoritative (for localdomain.lan) and recursive/forwarding (for the internet).
+
+If you’d like, I can show you how to:
+
+Test it from another VM or client (prove it’s serving your LAN)
+
+Make it the DNS for your network
+
+Or write a one-page summary document (for your manager) explaining what’s running and how to verify it.
+
+Would you like me to create that verification & summary document next?
+
+You said:
+Now tell me how to test it from my windows machine to this dns which i created in VM 
+ChatGPT said:
+Perfect 👍 — let’s now connect your Windows machine to your DNS server (BIND9) running inside your Ubuntu VM and test it end-to-end.
+
+We'll go step by step carefully.
+
+🧭 Step 1: Verify the Network Connection
+Your DNS server VM has this IP:
+
+192.168.0.128
+✅ On your Windows PC, open Command Prompt and test connectivity:
+
+ping 192.168.0.128
+You should see replies like:
+
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+⚠️ If it fails, your Windows machine and the VM are not in the same network —
+fix that first (see “Troubleshooting network” section below).
+
+🧩 Step 2: Temporarily Set Your Windows DNS Server
+🪟 Option 1: Through GUI
+Open Control Panel → Network and Internet → Network and Sharing Center
+
+Click Change adapter settings
+
+Right-click your active network adapter → Properties
+
+Select Internet Protocol Version 4 (TCP/IPv4) → click Properties
+
+Choose “Use the following DNS server addresses”
+
+Enter:
+
+Preferred DNS server: 192.168.0.128
+Alternate DNS server: 8.8.8.8   (optional backup)
+Click OK → OK
+
+Now your Windows machine is using your VM’s BIND9 as its DNS resolver.
+
+🧠 Option 2: Command Line (Quick)
+Run in Command Prompt (Run as Administrator):
+
+netsh interface ip set dns "Ethernet" static 192.168.0.128
+If you’re on Wi-Fi:
+
+netsh interface ip set dns "Wi-Fi" static 192.168.0.128
+To verify:
+
+nslookup
+> server
+It should show:
+
+Default Server:  dns.localdomain.lan
+Address:  192.168.0.128
+🧪 Step 3: Test Local Resolution
+Now, test if Windows can resolve the DNS record you defined.
+
+In Command Prompt:
+
+nslookup dns.localdomain.lan
+Expected output:
+
+Server:  dns.localdomain.lan
+Address: 192.168.0.128
+
+Name:    dns.localdomain.lan
+Address: 192.168.0.128
+✅ If you see that — your Windows system is resolving through your BIND DNS!
+
+🌍 Step 4: Test Internet Forwarding
+Still in Command Prompt:
+
+nslookup google.com
+Expected:
+
+Server:  dns.localdomain.lan
+Address: 192.168.0.128
+
+Non-authoritative answer:
+Name:    google.com
+Address: 142.250.xx.xx
+✅ This means your DNS server is forwarding external queries properly to Google’s public DNS (as configured).
+
+🔁 Step 5: Restore Windows DNS (Optional)
+If you just wanted to test temporarily, revert:
+
+netsh interface ip set dns "Ethernet" dhcp
+Or through GUI → select “Obtain DNS server address automatically.”
+
+🧰 Troubleshooting (If Ping/Lookup Fails)
+Problem	Possible Cause	Fix
+ping 192.168.0.128 fails	Different networks or VirtualBox NAT mode	Switch enp0s3 adapter in VirtualBox to Bridged Adapter
+nslookup dns.localdomain.lan says “Timed out”	Firewall blocking DNS (port 53)	Run sudo ufw status and ensure “Bind9” is allowed
+Internet lookup fails	No forwarding configured	Check /etc/bind/named.conf.options for forwarders section
+Works on VM but not Windows	Wrong DNS IP on Windows	Confirm using ipconfig /all → “DNS Servers: 192.168.0.128”
+✅ Summary
+Once everything’s set:
+
+Test	Command (Windows)	Expected Result
+Connectivity	ping 192.168.0.128	Replies OK
+Local DNS	nslookup dns.localdomain.lan	192.168.0.128
+Internet DNS	nslookup google.com	Google IPs
+Reverse lookup	nslookup 192.168.0.128	dns.localdomain.lan
+Would you like me to make a one-page “Windows DNS Test Guide (PDF)” with screenshots and these steps to share with your manager or team?
+
+You said:
+C:\Windows\System32>ping 192.168.0.128
+
+Pinging 192.168.0.128 with 32 bytes of data:
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+
+Ping statistics for 192.168.0.128:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\Windows\System32>
+C:\Windows\System32>netsh interface ip set dns "Ethernet" static 192.168.0.128
+
+
+C:\Windows\System32>nslookup dns.localdomain.lan
+Server:  dns.localdomain.lan
+Address:  192.168.0.128
+
+Name:    dns.localdomain.lan
+Address:  192.168.0.128
+
+
+C:\Windows\System32>nslookup google.com
+Server:  dns.localdomain.lan
+Address:  192.168.0.128
+
+Non-authoritative answer:
+Name:    google.com
+Addresses:  2404:6800:4009:802::200e
+          142.250.70.46
+
+
+C:\Windows\System32>netsh interface ip set dns "Ethernet" dhcp
+
+
+C:\Windows\System32>
+ChatGPT said:
+✅ Perfect — that’s exactly how it should look!
+
+Let’s break down what your results confirm:
+
+🔍 Step-by-Step Result Analysis
+Ping success
+
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+✔️ Your Windows system and Ubuntu VM are on the same LAN and reachable.
+
+Local DNS resolution
+
+nslookup dns.localdomain.lan
+Name:    dns.localdomain.lan
+Address: 192.168.0.128
+✔️ Your BIND9 DNS server is correctly serving its own hostname and resolving internal records.
+
+External resolution through forwarding
+
+nslookup google.com
+Non-authoritative answer:
+Name: google.com
+Addresses: 2404:6800:4009:802::200e
+           142.250.70.46
+✔️ Forwarders in /etc/bind/named.conf.options are working (most likely Google DNS 8.8.8.8).
+✔️ IPv6 and IPv4 addresses are both being returned — excellent.
+
+DNS reverted to DHCP
+
+netsh interface ip set dns "Ethernet" dhcp
+✔️ You’ve restored your normal Windows network settings after successful testing.
+
+🏁 ✅ Final Summary
+Test	Expected	Result
+Ping to DNS VM	Replies successfully	✅
+Resolve internal domain	dns.localdomain.lan → 192.168.0.128	✅
+Resolve internet domain	google.com → valid IPs	✅
+Forwarding works	Yes	✅
+Windows reverted to DHCP	Yes	✅
+You have fully working DNS:
+
+Authoritative zone (localdomain.lan)
+
+Forwarding to public DNS
+
+Accessible from external host (Windows)
+
+Would you like me to create a short “DNS Server Setup and Test Report (PDF)” that you can send to your manager showing all steps and your successful output?
+It’ll include:
+
+Network diagram
+
+Config summary
+
+Command outputs (your real results)
+
+Test verification table
+
+Would you like me to generate that?
+
+You said:
+Yes
+ChatGPT said:
+Perfect 👍 — please confirm just two quick things before I generate your DNS Server Setup & Test Report (PDF) so it’s accurate and manager-ready:
+
+Your DNS zone name → is it
+localdomain.lan
+or something else you used (like example.local)?
+
+Your DNS server hostname → is it dns.localdomain.lan (the same name you tested)?
+
+Once you confirm these two, I’ll create a neat, professional PDF report including:
+
+Setup summary
+
+Network diagram
+
+Key configuration highlights
+
+Test verification results (your command outputs)
+
+Final status section ("DNS operational and verified from Windows client").
+
+You said:
+code@dns:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           824M  1.5M  822M   1% /run
+/dev/sda3        39G   11G   26G  30% /
+tmpfs           4.1G     0  4.1G   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+/dev/sda2       512M  6.1M  506M   2% /boot/efi
+tmpfs           824M  100K  824M   1% /run/user/1000
+code@dns:~$
+code@dns:~$ su - root
+Password:
+root@dns:~#
+root@dns:~# ip r s
+default via 192.168.0.1 dev enp0s3 proto dhcp metric 100
+default via 10.0.3.2 dev enp0s8 proto dhcp metric 101
+10.0.3.0/24 dev enp0s8 proto kernel scope link src 10.0.3.15 metric 101
+169.254.0.0/16 dev enp0s8 scope link metric 1000
+192.168.0.0/24 dev enp0s3 proto kernel scope link src 192.168.0.128 metric 100
+root@dns:~#
+root@dns:~# hostname
+dns
+root@dns:~#
+root@dns:~# hostnamectl
+ Static hostname: dns
+       Icon name: computer-vm
+         Chassis: vm
+      Machine ID: 989c4e81c74b4986b2001907326d738b
+         Boot ID: 78c8f9c375d6430ab66c696f5a350adb
+  Virtualization: oracle
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 6.8.0-85-generic
+    Architecture: x86-64
+ Hardware Vendor: innotek GmbH
+  Hardware Model: VirtualBox
+root@dns:~#
+root@dns:~# sudo nano /etc/netplan/01-netcfg.yaml
+root@dns:~# sudo cat /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.0.128/24]
+      nameservers:
+        addresses:
+      routes:
+        - to: default
+          via: 192.168.0.1
+root@dns:~#
+root@dns:~# sudo apt update
+Hit:1 http://in.archive.ubuntu.com/ubuntu jammy InRelease
+Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:3 http://in.archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:4 http://in.archive.ubuntu.com/ubuntu jammy-backports InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+263 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo apt install bind9 dnsutils bind9utils -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  bind9-dnsutils bind9-host bind9-libs bind9-utils
+Suggested packages:
+  bind-doc resolvconf
+The following NEW packages will be installed:
+  bind9 bind9-utils bind9utils dnsutils
+The following packages will be upgraded:
+  bind9-dnsutils bind9-host bind9-libs
+3 upgraded, 4 newly installed, 0 to remove and 260 not upgraded.
+Need to get 434 kB/1,908 kB of archives.
+After this operation, 1,831 kB of additional disk space will be used.
+Get:1 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 bind9-utils amd64 1:9.18.39-0ubuntu0.22.04.1 [162 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 bind9 amd64 1:9.18.39-0ubuntu0.22.04.1 [265 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 bind9utils all 1:9.18.39-0ubuntu0.22.04.1 [3,920 B]
+Get:4 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 dnsutils all 1:9.18.39-0ubuntu0.22.04.1 [3,916 B]
+Fetched 434 kB in 2s (258 kB/s)
+(Reading database ... 182911 files and directories currently installed.)
+Preparing to unpack .../0-bind9-host_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-host (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Preparing to unpack .../1-bind9-dnsutils_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-dnsutils (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Preparing to unpack .../2-bind9-libs_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-libs:amd64 (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9-utils.
+Preparing to unpack .../3-bind9-utils_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9.
+Preparing to unpack .../4-bind9_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9 (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9utils.
+Preparing to unpack .../5-bind9utils_1%3a9.18.39-0ubuntu0.22.04.1_all.deb ...
+Unpacking bind9utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package dnsutils.
+Preparing to unpack .../6-dnsutils_1%3a9.18.39-0ubuntu0.22.04.1_all.deb ...
+Unpacking dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-libs:amd64 (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9 (1:9.18.39-0ubuntu0.22.04.1) ...
+Adding group bind' (GID 137) ...
+Done.
+Adding system user bind' (UID 130) ...
+Adding new user bind' (UID 130) with group bind' ...
+Not creating home directory /var/cache/bind'.
+wrote key file "/etc/bind/rndc.key"
+named-resolvconf.service is a disabled or a static unit, not starting it.
+Created symlink /etc/systemd/system/bind9.service → /lib/systemd/system/named.service.
+Created symlink /etc/systemd/system/multi-user.target.wants/named.service → /lib/systemd/system/named.service.
+Setting up bind9utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-host (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+Processing triggers for ufw (0.36.1-4ubuntu0.1) ...
+Processing triggers for man-db (2.10.2-1) ...
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.options
+root@dns:~# sudo cat /etc/bind/named.conf.options
+options {
+    directory "/var/cache/bind";
+    allow-query { localhost; 192.168.0.0/24; };
+    recursion yes;
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+    };
+};
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.local
+root@dns:~# sudo cat /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+// Define a forward lookup zone for your local domain
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/db.localdomain.lan";
+};
+
+// Define a reverse lookup zone for your local network (192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.0";
+};
+root@dns:~#
+root@dns:~# sudo mkdir /etc/bind/zones
+root@dns:~#
+root@dns:~# sudo cp /etc/bind/db.local /etc/bind/zones/db.localdomain.lan
+sudo cp /etc/bind/db.127 /etc/bind/zones/db.192.168.0
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/zones/db.localdomain.lan
+root@dns:~# sudo cat /etc/bind/zones/db.localdomain.lan
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      2         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+dns     IN      A       192.168.0.128
+
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/zones/db.192.168.0
+root@dns:~# sudo cat /etc/bind/zones/db.192.168.0
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      2         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+128     IN      PTR     dns.localdomain.lan.
+
+root@dns:~#
+root@dns:~# sudo named-checkconf
+root@dns:~#
+root@dns:~# sudo named-checkzone localdomain.lan /etc/bind/zones/db.localdomain.lan
+sudo named-checkzone 0.168.192.in-addr.arpa /etc/bind/zones/db.192.168.0
+zone localdomain.lan/IN: loaded serial 2
+OK
+zone 0.168.192.in-addr.arpa/IN: loaded serial 2
+OK
+root@dns:~# sudo systemctl restart bind9
+root@dns:~#
+root@dns:~# sudo ufw allow Bind9
+sudo ufw reload
+Rule added
+Rule added (v6)
+
+Firewall reloaded
+root@dns:~#
+root@dns:~#
+root@dns:~# dig dns.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> dns.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 51457
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 0a0e1e80ef3e1a9b0100000068f11c4a2ded8ecb900764de (good)
+;; QUESTION SECTION:
+;dns.localdomain.lan.           IN      A
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:54:42 IST 2025
+;; MSG SIZE  rcvd: 76
+
+root@dns:~# sudo chown -R bind:bind /etc/bind/zones
+root@dns:~# sudo chmod -R 755 /etc/bind/zones
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.local
+root@dns:~# sudo cat /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+// Define a forward lookup zone for your local domain
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/zones/db.localdomain.lan";
+};
+
+// Define a reverse lookup zone for your local network (192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.192.168.0";
+};
+
+root@dns:~# sudo systemctl restart bind9
+root@dns:~#
+root@dns:~# sudo systemctl status bind9
+● named.service - BIND Domain Name Server
+     Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2025-10-16 21:56:21 IST; 4s ago
+       Docs: man:named(8)
+    Process: 7251 ExecStart=/usr/sbin/named $OPTIONS (code=exited, status=0/SUCCESS)
+   Main PID: 7258 (named)
+      Tasks: 6 (limit: 9785)
+     Memory: 23.0M
+        CPU: 85ms
+     CGroup: /system.slice/named.service
+             └─7258 /usr/sbin/named -u bind
+
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 192.203.230.10#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 202.12.27.33#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 202.12.27.33#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 192.36.148.17#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 192.36.148.17#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 170.247.170.2#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 170.247.170.2#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 199.7.83.42#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 199.7.83.42#53
+Oct 16 21:56:21 dns named[7258]: resolver priming query complete: failure
+root@dns:~#
+root@dns:~# sudo journalctl -u bind9 --no-pager
+-- No entries --
+root@dns:~#
+root@dns:~# dig dns.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> dns.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 58105
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 7ada8c4cc857421b0100000068f11cbdcecb15debddf237c (good)
+;; QUESTION SECTION:
+;dns.localdomain.lan.           IN      A
+
+;; ANSWER SECTION:
+dns.localdomain.lan.    604800  IN      A       192.168.0.128
+
+;; Query time: 2 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:56:37 IST 2025
+;; MSG SIZE  rcvd: 92
+
+root@dns:~#
+root@dns:~# dig google.com @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> google.com @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35925
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 8bac8ba11df9e54b0100000068f11cf085ab39e58dd63277 (good)
+;; QUESTION SECTION:
+;google.com.                    IN      A
+
+;; ANSWER SECTION:
+google.com.             208     IN      A       142.250.70.46
+
+;; Query time: 51 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:57:28 IST 2025
+;; MSG SIZE  rcvd: 83
+
+root@dns:~#
+root@dns:~# dig -x 192.168.0.128 @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> -x 192.168.0.128 @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 24403
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: c25cfdf4988d5c040100000068f11d7c92889b8d1fcde384 (good)
+;; QUESTION SECTION:
+;128.0.168.192.in-addr.arpa.    IN      PTR
+
+;; ANSWER SECTION:
+128.0.168.192.in-addr.arpa. 604800 IN   PTR     dns.localdomain.lan.
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:59:48 IST 2025
+;; MSG SIZE  rcvd: 116
+
+root@dns:~#
+
+C:\Windows\System32>ping 192.168.0.128
+
+Pinging 192.168.0.128 with 32 bytes of data:
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.128: bytes=32 time<1ms TTL=64
+
+Ping statistics for 192.168.0.128:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\Windows\System32>
+C:\Windows\System32>netsh interface ip set dns "Ethernet" static 192.168.0.128
+
+
+C:\Windows\System32>nslookup dns.localdomain.lan
+Server:  dns.localdomain.lan
+Address:  192.168.0.128
+
+Name:    dns.localdomain.lan
+Address:  192.168.0.128
+
+
+C:\Windows\System32>nslookup google.com
+Server:  dns.localdomain.lan
+Address:  192.168.0.128
+
+Non-authoritative answer:
+Name:    google.com
+Addresses:  2404:6800:4009:802::200e
+          142.250.70.46
+
+
+C:\Windows\System32>netsh interface ip set dns "Ethernet" dhcp
+
+
+C:\Windows\System32>
+
+Now prepare
+ChatGPT said:
+Your DNS server setup and test report has been generated successfully. You can download it using the link below:
+
+📄 Download DNS_Server_Setup_and_Test_Report.pdf 
+
+
+
+
+No file chosenNo file chosen
+ChatGPT can make mistakes. Check important info. See Cookie Preferences.
