@@ -1,0 +1,867 @@
+login as: code
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v23.6 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to code@192.168.0.128                                  ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (remote display is forwarded through SSH)  ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.8.0-85-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+244 updates can be applied immediately.
+168 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '24.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+*** System restart required ***
+Last login: Thu Oct 16 22:24:51 2025 from 192.168.0.134
+code@dns:~$ su - root
+Password:
+root@dns:~#
+root@dns:~# sudo mkdir -p /etc/ssl/localcerts
+root@dns:~# cd /etc/ssl/localcerts
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts# ## Generate a self-signed certificate:
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts# sudo openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout webapp.key \
+  -out webapp.crt \
+  -subj "/C=IN/ST=State/L=City/O=Company/OU=IT/CN=webapp.localdomain.lan"
+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.........+..+....+...+..+.........+....+..+.+................++++++++++++++++++++++++++++++++++++++++++++++++++++++*....+...+....+..+.............+............+......+...+.....+.+...+.......+...+......+..+.........+....+..+....+...........+............+...+...+.+........+.+.....+.+..................+...+..+......+..++++++++++++++++++++++++++++++++
+....+......+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.....+..+...++++++++++++++++++++++++++++++++++++.+...+......+.+.....+................+.....+....+......+.....+.......+..+.+..+............+.............+...............+......++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts# ls -ltr
+total 8
+-rw------- 1 root root 1704 Oct 16 22:34 webapp.key
+-rw-r--r-- 1 root root 1350 Oct 16 22:34 webapp.crt
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts# sudo ./venv/bin/python app.py --cert=/etc/ssl/localcerts/webapp.crt --key=/etc/ssl/localcerts/weba
+sudo: ./venv/bin/python: command not found
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts# sudo /root/simple-login/venv/bin/python /root/simple-login/app.py --cert=/etc/ssl/localcerts/webapkey
+ * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 80 is in use by another program. Either identify and stop that program, or start the server with a different port.
+root@dns:/etc/ssl/localcerts#
+root@dns:/etc/ssl/localcerts# cd /root/simple-login/
+sudo ./venv/bin/python app.py --cert=/etc/ssl/localcerts/webapp.crt --key=/etc/ssl/localcerts/webapp.key
+ * Serving Flask app 'app'
+ * Debug mode: off
+Address already in use
+Port 80 is in use by another program. Either identify and stop that program, or start the server with a different port.
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo lsof -i :80
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+python  17793 root    3u  IPv4  59535      0t0  TCP *:http (LISTEN)
+python  17793 root    6u  IPv4  65710      0t0  TCP 192.168.0.128:http->192.168.0.134:65099 (ESTABLISHED)
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo kill -9 17793
+root@dns:~/simple-login# sudo lsof -i :80
+root@dns:~/simple-login# sudo ./venv/bin/python app.py --cert=/etc/ssl/localcerts/webapp.crt --key=/etc/ssl/localcerts/webapp.ke
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.0.128:80
+Press CTRL+C to quit
+192.168.0.134 - - [16/Oct/2025 22:38:07] code 400, message Bad request version ('è\x9bBCavßjt\x1aµ')
+192.168.0.134 - - [16/Oct/2025 22:38:07] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03Y<%ÀÛ\x9dõ\x1er\x1b\x0dÐgü\x0bè\x9bBCavßjt\x1
+192.168.0.134 - - [16/Oct/2025 22:38:07] code 400, message Bad request version ('êê\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x1\x93::\x00\x00ÿ\x01\x00\x01\x00\x00')
+192.168.0.134 - - [16/Oct/2025 22:38:07] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03v,\x80yç\x9a\x97»\x8eZ\x9c$º]©\x7f\x14J»\x0e\\x9a´õÒ¥.v½¦\x91Ù\x03¨\x87ÓG¿´AÈËH,\x13\x06Ø\x00 êê\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:38:07] code 400, message Bad request version ('Zj\x9aK{Á\x88')
+192.168.0.134 - - [16/Oct/2025 22:38:07] "\x16\x03\x01\x06À\x01\x00\x06¼\x03\x03ÖÚ\x82ð\x06£9\x8eJ\x05þD)>çÎÚ«\x8f\x0f\x88\x0e¢\\x98£|Qæ25È\x06\x95¸\x1f9dó\x8fû,þdßmç\x00 ::\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x00-\x00\x02\x01\x01\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00\x12\x00\x00\x00\x17\x00\x00\x00\x1b\x00\x03\x02\x00\x02DÍ\x00\x\x00\x00\x01\x00\x01õ\x00 ¶\x87¦\x999g[ Ä,èê\x7f?J^A3öî2\x170\x9då1S\x06LóAU\x00°ö\x07n¡¾\x81<ïÃn6ó\x19Æ\x16§FBrj\x08>Í)\x0c\x7fST -
+192.168.0.134 - - [16/Oct/2025 22:38:07] code 400, message Bad request version ('[P\x959{\x02#Á\x1aÐ\x05·\x88fÐé;û¥ãg\x19\x9e\x0
+192.168.0.134 - - [16/Oct/2025 22:38:07] "\x16\x03\x01\x06 \x01\x00\x06\x9c\x03\x03Òë.âÜm\\\x92ÊÕh ¦8\x9fXSÖ\x87Øé/\x87ÜÀ\x07wò=û¥ãg\x19\x9e\x00yËIC\x9bÉ|\x13\x00 " HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:38:11] code 400, message Bad request version ('Â')
+192.168.0.134 - - [16/Oct/2025 22:38:11] "\x16\x03\x01\x06 \x01\x00\x06\x9c\x03\x03B\x10p4.í¯¤Òy\x06y£p\x1fþ i¶¼Éæ·S\x03»8I\x10\s.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:38:11] code 400, message Bad request version ('*A')
+192.168.0.134 - - [16/Oct/2025 22:38:11] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03N¸\x99NAô®õKiðØ\x1a\x0dÌ)\x11UÕÀ[Î¡ó9òè\x1f\xÚ\x1b¯Û 'é(\x7fZ\x1ae¶w\x00 ÊÊ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93ÚÚ\x00\x000+\x00\x07\x06jj\x03\x04\x03\x03\x00#\x00\x00\x00\x0d\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\x08\x05\x05\x01\x08\x06\x000\x0e\x00\x0c\x02h2\x08http/1.1þ\x0d\x01\x1a\x00\x00\x01\x00\x011\x00 ez\x15¦d\x00\x12nõ\x02e(®÷\x0e¶ÚÞ\x82\x95\x06¹eY#\x18\x1bfmé\x90Ü¥\x85yd-\x1b{ÆÆê\x08\x9d÷\x15eEtg³\x10aû\x8eX\x84\x0e<*tFUÚ\x0f\x96^øXað\x97¶ë\x9e è«\x07¬\x1f$\x94\x1c\x99ÆØTé8ðm¼X\x9c \x88?\x81ÅÚÜïêÕÀæÀ\x81a8Ý=\x83\x14R5s\x02ï\x83\x1ejñ%Cý\x17\x81et\x06j\x8bZÍ,.\x83\x0b]\x11C`v¹P\x0e^\x10a\x09å¬¼ù\x94\x10K{%L3wH;¹\x95\x03\x03EB!&¬'×\x0e3Í±ÉñFo®ø)¦4¢\x9591Øæ18Wf\x87\x17ï³²×FÏÏ½µ× \x1d\x00\x0b\x00\x02\x01\x00\x00\x17\x00\x00\x003\x04ï\x01\x87¤5²4â\x8c^·\x86\x9aÌ^^'lÉ»ÂÊér\x03\x84\x16Uf¶\x04F¥!YÆ4¢?N´\x0dY\x15,ôb\x9dwZu\x07\x96>»$V°ªm\x80yEº¡CH7Ët\x1a\x8dgu«y7\x8aö»'\x11\x99\x80`\x8aD\x8c\x03\x9c»0q\x80\x0c4\x89`;ªs\x8d¤\x82\x04\x0b)²ÁÓ\x85·\x97À\x06æ¯\x1e´\x96÷s¢\x93Æ\x97¿Ç°¯\x82s@5\x98tTS\x15\x01\x87Ü\x04+ïÒ\x1d=\x96\x89Üb\x90/$8û\x06a\x9e\x15±\x84á\x03Þ°(((tË¡\x86\x00­ZÑ÷1cL\x06 *A" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:38:11] code 400, message Bad request version ('\x02h2\x08http/1.1\x00+\x00\x07\x06\x9a\x9a\x03
+192.168.0.134 - - [16/Oct/2025 22:38:11] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03Zmòl\x01\x16ÈS¿¡8FY§ã\x93ì¡0¶ñ êþ2ë¦ãk¥ô\x0f x1a\x93ùÕi/Ã\x08`\x09Ý[Q\x00 \x9a\x9a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93êê\\x12\x00\x00\x00#\x00\x00\x00-\x00\x02\x01\x01\x00\x0b\x00\x02\x01\x00\x00\x0d\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\xx00\x00DÍ\x00\x05\x00\x03\x02h2ÿ\x01\x00\x01\x00\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x\x00" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:38:11] code 400, message Bad request version ('\x9a\x94')
+192.168.0.134 - - [16/Oct/2025 22:38:11] "\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x03w\x8b\x0c=7}hæ\x82Ç\x19P?°»à-õê)Ëå\x9d¯õ\x13t\x86êDù[\x92»\x15Õ*Fp\x15ï\x134s\x00 ÚÚ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06súú\x00\0\x0c\x02h2\x08http/1.1\x00\x17\x00\x00\x00-\x00\x02\x01\x01\x00\x0d\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\x08\x05\x05x04ï\x04íúú\x00\x01\x00\x11ì\x04ÀÀð5\x9c\x93~a\x8ch³Ù4\x85\x9a\x94" HTTPStatus.BAD_REQUEST -
+http://192.168.0.128:80^Croot@dns:~/simple-login#
+root@dns:~/simple-login# sudo ./venv/bin/python app.py --cert=/etc/ssl/localcerts/webapp.crt --key=/etc/ssl/localcerts/webapp.ke
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.0.128:80
+Press CTRL+C to quit
+192.168.0.134 - - [16/Oct/2025 22:39:03] "GET / HTTP/1.1" 302 -
+192.168.0.134 - - [16/Oct/2025 22:39:03] "GET /login HTTP/1.1" 200 -
+192.168.0.134 - - [16/Oct/2025 22:39:07] "GET / HTTP/1.1" 302 -
+192.168.0.134 - - [16/Oct/2025 22:39:07] "GET /login HTTP/1.1" 200 -
+192.168.0.134 - - [16/Oct/2025 22:39:11] code 400, message Bad request version ('x\x06/¾Hw\x13H!\x1ai\x9fSØ\x93\x98çbÈ\x83*ÁI&ýä
+192.168.0.134 - - [16/Oct/2025 22:39:11] "\x16\x03\x01\x06 \x01\x00\x06\x9c\x03\x03ûÐ-PÝäÆî.p\x14\x9a®\x89t\x93«Ö$½­:m»(ã~\x98l&rj¤\x80äH¶\x9fÏ{\x04\x00 ZZ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x063ªª\x00\x00\x00\xÍ\x00\x05\x00\x03\x02h2\x00\x0d\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\x08\x05\x05\x01\x08\x06\x06\x01\x00#\x00\x00\x0000\x00\x00\x00\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00\x0b\x00\x02\x01\x00\x003\x04ï\x04íÚÚ\x00\x01\x00\x11ì\x04Àf09¸u7¡{xAäõ?.¦rÐ¶¾S×±\x96õ:(°e\x16²J'Q\x98»\x94\x04«:(\x98Ü\x8fv\x99UG¨\x0bx\x06/¾Hw\x13H!\x1ai\x9fSØ\x93\x98çbÈ\x83*ÁI&ýä\x05\x82ñ½}\x0
+192.168.0.134 - - [16/Oct/2025 22:39:11] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x06')
+192.168.0.134 - - [16/Oct/2025 22:39:11] "\x16\x03\x01\x06 \x01\x00\x06\x9c\x03\x03Z"³M}\x00MðÞ" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:39:11] code 400, message Bad request version ('\x9a\x9a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x00\x063jj\x00\x00\x00-\x00\x02\x01\x01\x00\x1b\x00\x03\x02\x00\x02\x00+\x00\x07\x06')
+192.168.0.134 - - [16/Oct/2025 22:39:11] "\x16\x03\x01\x06 \x01\x00\x06\x9c\x03\x03x&\x89zô\x8a\x91jukõl¿ìjq\x96î\x7f¦).\x92À\x0Ò¥r\x8bíÃJâ%\x85í/ð\x07FeÓ\x00 \x9a\x9a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x063jj\x\x03\x02\x00\x02\x00+\x00\x07\x06" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:39:11] code 400, message Bad request version ('\x8a\x8a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x00\x06\x93JJ\x00\x00\x00')
+192.168.0.134 - - [16/Oct/2025 22:39:11] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03ÚÞ\x01#\x12\x08\x03\x08Å*ù¡\x1f¤ìw\x84îÿ\x07ÓS½¹\x08\x81ÎÈÕ|Ù¡y\x835Ïk\x10c\x0eM\x00 \x8a\x8a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00REQUEST -
+
+^Croot@dns:~/simple-login#
+root@dns:~/simple-login# sudo ./venv/bin/python app.py --host 0.0.0.0 --port 443 --ssl-context /etc/ssl/localcerts/webapp.crt:/e
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.0.128:80
+Press CTRL+C to quit
+192.168.0.134 - - [16/Oct/2025 22:40:06] code 400, message Bad request version ('Ï-K9\x88N´}øMÊê+¹m&\x9b\x11ÆÌ·ÏÉ\x00')
+192.168.0.134 - - [16/Oct/2025 22:40:06] "\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x030Z\x14K\x1aË\x86\x7fÉ\x85¯\x17ä'\x85í\x9b\x151PØ9\x88N´}øMÊê+¹m&\x9b\x11ÆÌ·ÏÉ\x00 " HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:40:06] code 400, message Bad request version ('ò\x9aJ\x94\x19\x07\x03')
+192.168.0.134 - - [16/Oct/2025 22:40:06] "\x16\x03\x01\x06À\x01\x00\x06¼\x03\x03sí«ý©Â/\x86\x8c+\x94ÊhÏå\x87º¥û!Ó¾ß\x05ù4¸Vi\x1d91ûî\x0f÷1Þÿþê%ý\x17ô6r\x00 \x9a\x9a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06SÊÊ\x00\0\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00\x17\x00\x00\x00-\x00\x02\x01\x01\x00\x1b\x00\x03\x02\x00\x02\x003\x04ï\x04íÚÚ\x00\x0\x94\x19\x07\x03" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:40:06] code 400, message Bad request version ('\x00ðù·,Í\x18ÖÃg\x81OúÆ\x7fïóÞ\x0fïn\x087½\x07G
+192.168.0.134 - - [16/Oct/2025 22:40:06] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03Û>\x8fm\x80^µ\x17Ñb­\x93DbO\x81³¯\x89\x1cånæ\ö\x15"\x0e½h÷\x9b=Â\x0e¸Â\x1dÏ¢^ªßÕ\x00 **\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x0\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1\x00\x17\x00\x00þ\x0d\x01\x1a\x00\x00\x01\x00\x01\x08\x00 [\x95\x98\x19b\x05\x9a\x08\x84c+Zu×îß®\x1f\x00ðù·,Í\x18ÖÃg\x81OúÆ\x7fïóÞ\x0fïn\x087½\x07Gû¿\x13áF" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:40:06] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x06')
+192.168.0.134 - - [16/Oct/2025 22:40:06] "\x16\x03\x01\x06 \x01\x00\x06\x9c\x03\x03o8CT\x16ÛpMx÷Óvë\x9bü!\x9e+ÔºUF¦èã\x93«\x81D\
+192.168.0.134 - - [16/Oct/2025 22:40:07] code 400, message Bad request version ('ÊÊ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x1\x93')
+192.168.0.134 - - [16/Oct/2025 22:40:07] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03â\x903,í\x87`¥Ýé\x11ö\x03\x90\x89ç«òù\x9eÒ\x9\x85£\x8bÞ%¤³¨"ÒH«÷\x07'\x96²ñx \x00 ÊÊ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93"
+192.168.0.134 - - [16/Oct/2025 22:40:07] code 400, message Bad request version ('\x1a\x1a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x00\x06\x93ZZ\x00\x00\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00')
+192.168.0.134 - - [16/Oct/2025 22:40:07] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03\x8b\x11®Í^¢¢\x17íÒY\x8aÆ(tñ£(êQÁÔ\x9f\x18\x1ÍZÖ\x9c0Wqaº\x8f\x97RÓÃ\x0d\x95\x1e\x00 \x1a\x1a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00x00\x00\x00\x00\x00" HTTPStatus.BAD_REQUEST -
+192.168.0.134 - - [16/Oct/2025 22:40:07] code 400, message Bad request version ('\x00\x02\x01\x00\x00')
+192.168.0.134 - - [16/Oct/2025 22:40:07] "\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03f¬ItÎ4³ª\x03Ú¿×õ ù\x8fËýü\x1e\x13åKyIuØ\x8bM\x85ÍP*þ(µîí\x00 zz\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93ªª\x00\x00\x00+\x00\x01\x01\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00\x12\x00\x00\x00\x0d\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\x08\x05\x05\x0x00\x03\x02\x00\x02\x00\x10\x00\x0e\x00\x0c\x02h2\x08http/1.1DÍ\x00\x05\x00\x03\x02h2\x00\x17\x00\x00\x00\x0b\x00\x02\x01\x00\x0
+192.168.0.134 - - [16/Oct/2025 22:40:07] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x06À\x01\x00\x06¼\x03\x03gøi
+192.168.0.134 - - [16/Oct/2025 22:40:07] "\x16\x03\x01\x06À\x01\x00\x06¼\x03\x03gøi­Y\x00{ÞH\x15÷ ä¯g" HTTPStatus.BAD_REQUEST -
+
+^Croot@dns:~/simple-login#
+root@dns:~/simple-login#
+root@dns:~/simple-login# ls -ltr
+total 8
+drwxr-xr-x 5 root root 4096 Oct 16 22:16 venv
+-rw-r--r-- 1 root root 2555 Oct 16 22:17 app.py
+root@dns:~/simple-login#
+root@dns:~/simple-login# nano app.py
+root@dns:~/simple-login# sudo ./venv/bin/python app.py
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:443
+ * Running on https://192.168.0.128:443
+Press CTRL+C to quit
+
+^Croot@dns:~/simple-login
+root@dns:~/simple-login#
+root@dns:~/simple-login# nano app.py
+root@dns:~/simple-login# sudo ./venv/bin/python app.py
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:8443
+ * Running on https://192.168.0.128:8443
+Press CTRL+C to quit
+^Croot@dns:~/simple-login#
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere
+Bind9                      ALLOW       Anywhere
+80/tcp                     ALLOW       Anywhere
+22/tcp (v6)                ALLOW       Anywhere (v6)
+Bind9 (v6)                 ALLOW       Anywhere (v6)
+80/tcp (v6)                ALLOW       Anywhere (v6)
+
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo ufw allow 8443/tcp
+sudo ufw reload
+Rule added
+Rule added (v6)
+
+Firewall reloaded
+root@dns:~/simple-login#
+root@dns:~/simple-login#
+root@dns:~/simple-login# nano app.py
+root@dns:~/simple-login# curl -vk https://127.0.0.1:8443
+Command 'curl' not found, but can be installed with:
+snap install curl  # version 8.16.0, or
+apt  install curl  # version 7.81.0-1ubuntu1.21
+See 'snap info curl' for additional versions.
+root@dns:~/simple-login#
+root@dns:~/simple-login# apt  install curl
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libcurl4
+The following NEW packages will be installed:
+  curl
+The following packages will be upgraded:
+  libcurl4
+1 upgraded, 1 newly installed, 0 to remove and 243 not upgraded.
+Need to get 194 kB/484 kB of archives.
+After this operation, 456 kB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 curl amd64 7.81.0-1ubuntu1.21 [194 kB]
+Fetched 194 kB in 1s (214 kB/s)
+(Reading database ... 190256 files and directories currently installed.)
+Preparing to unpack .../libcurl4_7.81.0-1ubuntu1.21_amd64.deb ...
+Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.21) over (7.81.0-1ubuntu1.17) ...
+Selecting previously unselected package curl.
+Preparing to unpack .../curl_7.81.0-1ubuntu1.21_amd64.deb ...
+Unpacking curl (7.81.0-1ubuntu1.21) ...
+Setting up libcurl4:amd64 (7.81.0-1ubuntu1.21) ...
+Setting up curl (7.81.0-1ubuntu1.21) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+root@dns:~/simple-login# curl -vk https://127.0.0.1:8443
+*   Trying 127.0.0.1:8443...
+* connect to 127.0.0.1 port 8443 failed: Connection refused
+* Failed to connect to 127.0.0.1 port 8443 after 0 ms: Connection refused
+* Closing connection 0
+curl: (7) Failed to connect to 127.0.0.1 port 8443 after 0 ms: Connection refused
+root@dns:~/simple-login# nano app.py
+root@dns:~/simple-login# curl -vk https://127.0.0.1:8443
+*   Trying 127.0.0.1:8443...
+* connect to 127.0.0.1 port 8443 failed: Connection refused
+* Failed to connect to 127.0.0.1 port 8443 after 0 ms: Connection refused
+* Closing connection 0
+curl: (7) Failed to connect to 127.0.0.1 port 8443 after 0 ms: Connection refused
+root@dns:~/simple-login# cat app.py
+# app.py
+from flask import Flask, request, render_template_string, redirect, url_for
+
+app = Flask(__name__)
+
+# demo credentials (DO NOT use in production)
+DEMO_USER = "admin"
+DEMO_PASS = "P@ssw0rd"
+
+login_html = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f4f6f8;display:flex;align-items:center;justify-content:center;height:100vh;ma
+    .card{background:white;padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);width:320px}
+    input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:4px}
+    button{width:100%;padding:10px;margin-top:10px;border:0;border-radius:4px;background:#2563eb;color:white;font-weight:600}
+    .error{color:#b91c1c;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 12px 0">Please sign in</h2>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}">
+      <label for="username">Username</label>
+      <input id="username" name="username" required autofocus />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>
+"""
+
+success_html = """
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"/><title>Welcome</title></head>
+  <body style="font-family:Arial, sans-serif;display:flex;align-items:center;justify-content:center;height:100vh">
+    <div style="text-align:center;">
+      <h1>Welcome, {{ user }} ?</h1>
+      <p>You reached <strong>/login</strong> successfully.</p>
+    </div>
+  </body>
+</html>
+"""
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        u = request.form.get("username","")
+        p = request.form.get("password","")
+        if u == DEMO_USER and p == DEMO_PASS:
+            return render_template_string(success_html, user=u)
+        else:
+            return render_template_string(login_html, error="Invalid username or password.")
+    return render_template_string(login_html, error=None)
+
+# Optional root -> redirect to /login
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8443, ssl_context=("/etc/ssl/localcerts/webapp.crt",
+                                                      "/etc/ssl/localcerts/webapp.key"))
+
+root@dns:~/simple-login# sudo lsof -i :8443
+root@dns:~/simple-login# sudo ufw status
+sudo iptables -L -n
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere
+Bind9                      ALLOW       Anywhere
+80/tcp                     ALLOW       Anywhere
+8443/tcp                   ALLOW       Anywhere
+22/tcp (v6)                ALLOW       Anywhere (v6)
+Bind9 (v6)                 ALLOW       Anywhere (v6)
+80/tcp (v6)                ALLOW       Anywhere (v6)
+8443/tcp (v6)              ALLOW       Anywhere (v6)
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ufw-before-logging-input  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-before-input  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-after-input  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-after-logging-input  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-reject-input  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-track-input  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination
+ufw-before-logging-forward  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-before-forward  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-after-forward  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-after-logging-forward  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-reject-forward  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-track-forward  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+ufw-before-logging-output  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-before-output  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-after-output  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-after-logging-output  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-reject-output  all  --  0.0.0.0/0            0.0.0.0/0
+ufw-track-output  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-after-forward (1 references)
+target     prot opt source               destination
+
+Chain ufw-after-input (1 references)
+target     prot opt source               destination
+ufw-skip-to-policy-input  udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:137
+ufw-skip-to-policy-input  udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:138
+ufw-skip-to-policy-input  tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:139
+ufw-skip-to-policy-input  tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:445
+ufw-skip-to-policy-input  udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:67
+ufw-skip-to-policy-input  udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:68
+ufw-skip-to-policy-input  all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type BROADCAST
+
+Chain ufw-after-logging-forward (1 references)
+target     prot opt source               destination
+LOG        all  --  0.0.0.0/0            0.0.0.0/0            limit: avg 3/min burst 10 LOG flags 0 level 4 prefix "[UFW BLOCK]
+
+Chain ufw-after-logging-input (1 references)
+target     prot opt source               destination
+LOG        all  --  0.0.0.0/0            0.0.0.0/0            limit: avg 3/min burst 10 LOG flags 0 level 4 prefix "[UFW BLOCK]
+
+Chain ufw-after-logging-output (1 references)
+target     prot opt source               destination
+
+Chain ufw-after-output (1 references)
+target     prot opt source               destination
+
+Chain ufw-before-forward (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 3
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 11
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 12
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 8
+ufw-user-forward  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-before-input (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+ufw-logging-deny  all  --  0.0.0.0/0            0.0.0.0/0            ctstate INVALID
+DROP       all  --  0.0.0.0/0            0.0.0.0/0            ctstate INVALID
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 3
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 11
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 12
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0            icmptype 8
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            udp spt:67 dpt:68
+ufw-not-local  all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     udp  --  0.0.0.0/0            224.0.0.251          udp dpt:5353
+ACCEPT     udp  --  0.0.0.0/0            239.255.255.250      udp dpt:1900
+ufw-user-input  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-before-logging-forward (1 references)
+target     prot opt source               destination
+
+Chain ufw-before-logging-input (1 references)
+target     prot opt source               destination
+
+Chain ufw-before-logging-output (1 references)
+target     prot opt source               destination
+
+Chain ufw-before-output (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+ufw-user-output  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-logging-allow (0 references)
+target     prot opt source               destination
+LOG        all  --  0.0.0.0/0            0.0.0.0/0            limit: avg 3/min burst 10 LOG flags 0 level 4 prefix "[UFW ALLOW]
+
+Chain ufw-logging-deny (2 references)
+target     prot opt source               destination
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0            ctstate INVALID limit: avg 3/min burst 10
+LOG        all  --  0.0.0.0/0            0.0.0.0/0            limit: avg 3/min burst 10 LOG flags 0 level 4 prefix "[UFW BLOCK]
+
+Chain ufw-not-local (1 references)
+target     prot opt source               destination
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type MULTICAST
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type BROADCAST
+ufw-logging-deny  all  --  0.0.0.0/0            0.0.0.0/0            limit: avg 3/min burst 10
+DROP       all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-reject-forward (1 references)
+target     prot opt source               destination
+
+Chain ufw-reject-input (1 references)
+target     prot opt source               destination
+
+Chain ufw-reject-output (1 references)
+target     prot opt source               destination
+
+Chain ufw-skip-to-policy-forward (0 references)
+target     prot opt source               destination
+DROP       all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-skip-to-policy-input (7 references)
+target     prot opt source               destination
+DROP       all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-skip-to-policy-output (0 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-track-forward (1 references)
+target     prot opt source               destination
+
+Chain ufw-track-input (1 references)
+target     prot opt source               destination
+
+Chain ufw-track-output (1 references)
+target     prot opt source               destination
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            ctstate NEW
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            ctstate NEW
+
+Chain ufw-user-forward (1 references)
+target     prot opt source               destination
+
+Chain ufw-user-input (1 references)
+target     prot opt source               destination
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:22
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:53 /* 'dapp_Bind9' */
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:53 /* 'dapp_Bind9' */
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8443
+
+Chain ufw-user-limit (0 references)
+target     prot opt source               destination
+LOG        all  --  0.0.0.0/0            0.0.0.0/0            limit: avg 3/min burst 5 LOG flags 0 level 4 prefix "[UFW LIMIT BL
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+
+Chain ufw-user-limit-accept (0 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain ufw-user-logging-forward (0 references)
+target     prot opt source               destination
+
+Chain ufw-user-logging-input (0 references)
+target     prot opt source               destination
+
+Chain ufw-user-logging-output (0 references)
+target     prot opt source               destination
+
+Chain ufw-user-output (1 references)
+target     prot opt source               destination
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo ufw allow 8443
+Rule added
+Rule added (v6)
+root@dns:~/simple-login# sudo netstat -tulnp | grep 8443
+sudo: netstat: command not found
+root@dns:~/simple-login# sudo apt update
+sudo apt install nginx -y
+Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Hit:2 http://in.archive.ubuntu.com/ubuntu jammy InRelease
+Get:3 http://in.archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+Get:4 http://security.ubuntu.com/ubuntu jammy-security/main amd64 DEP-11 Metadata [54.7 kB]
+Get:5 http://security.ubuntu.com/ubuntu jammy-security/main amd64 c-n-f Metadata [13.9 kB]
+Get:6 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 DEP-11 Metadata [208 B]
+Get:7 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 DEP-11 Metadata [125 kB]
+Get:8 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 c-n-f Metadata [22.2 kB]
+Get:9 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 DEP-11 Metadata [208 B]
+Get:10 http://in.archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+Get:11 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [2,992 kB]
+Get:12 http://in.archive.ubuntu.com/ubuntu jammy-updates/main i386 Packages [899 kB]
+Get:13 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 DEP-11 Metadata [112 kB]
+Get:14 http://in.archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [4,671 kB]
+Get:15 http://in.archive.ubuntu.com/ubuntu jammy-updates/restricted i386 Packages [49.2 kB]
+Get:16 http://in.archive.ubuntu.com/ubuntu jammy-updates/restricted Translation-en [862 kB]
+Get:17 http://in.archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 DEP-11 Metadata [212 B]
+Get:18 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe i386 Packages [786 kB]
+Get:19 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1,235 kB]
+Get:20 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 DEP-11 Metadata [359 kB]
+Get:21 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 c-n-f Metadata [29.7 kB]
+Get:22 http://in.archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [57.6 kB]
+Get:23 http://in.archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 DEP-11 Metadata [940 B]
+Get:24 http://in.archive.ubuntu.com/ubuntu jammy-backports/main amd64 DEP-11 Metadata [7,148 B]
+Get:25 http://in.archive.ubuntu.com/ubuntu jammy-backports/restricted amd64 DEP-11 Metadata [216 B]
+Get:26 http://in.archive.ubuntu.com/ubuntu jammy-backports/universe amd64 DEP-11 Metadata [9,664 B]
+Get:27 http://in.archive.ubuntu.com/ubuntu jammy-backports/multiverse amd64 DEP-11 Metadata [212 B]
+Fetched 12.7 MB in 4s (2,838 kB/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+243 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libnginx-mod-http-geoip2 libnginx-mod-http-image-filter libnginx-mod-http-xslt-filter libnginx-mod-mail libnginx-mod-stream li
+  nginx-core
+Suggested packages:
+  fcgiwrap nginx-doc
+The following NEW packages will be installed:
+  libnginx-mod-http-geoip2 libnginx-mod-http-image-filter libnginx-mod-http-xslt-filter libnginx-mod-mail libnginx-mod-stream li
+  nginx-common nginx-core
+0 upgraded, 9 newly installed, 0 to remove and 243 not upgraded.
+Need to get 698 kB of archives.
+After this operation, 2,391 kB of additional disk space will be used.
+Get:1 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 nginx-common all 1.18.0-6ubuntu14.7 [40.1 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnginx-mod-http-geoip2 amd64 1.18.0-6ubuntu14.7 [12.0 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnginx-mod-http-image-filter amd64 1.18.0-6ubuntu14.7 [15.5
+Get:4 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnginx-mod-http-xslt-filter amd64 1.18.0-6ubuntu14.7 [13.8
+Get:5 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnginx-mod-mail amd64 1.18.0-6ubuntu14.7 [45.8 kB]
+Get:6 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnginx-mod-stream amd64 1.18.0-6ubuntu14.7 [73.0 kB]
+Get:7 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnginx-mod-stream-geoip2 amd64 1.18.0-6ubuntu14.7 [10.1 kB]
+Get:8 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 nginx-core amd64 1.18.0-6ubuntu14.7 [483 kB]
+Get:9 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 nginx amd64 1.18.0-6ubuntu14.7 [3,878 B]
+Fetched 698 kB in 1s (629 kB/s)
+Preconfiguring packages ...
+Selecting previously unselected package nginx-common.
+(Reading database ... 190263 files and directories currently installed.)
+Preparing to unpack .../0-nginx-common_1.18.0-6ubuntu14.7_all.deb ...
+Unpacking nginx-common (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package libnginx-mod-http-geoip2.
+Preparing to unpack .../1-libnginx-mod-http-geoip2_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking libnginx-mod-http-geoip2 (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package libnginx-mod-http-image-filter.
+Preparing to unpack .../2-libnginx-mod-http-image-filter_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking libnginx-mod-http-image-filter (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package libnginx-mod-http-xslt-filter.
+Preparing to unpack .../3-libnginx-mod-http-xslt-filter_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking libnginx-mod-http-xslt-filter (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package libnginx-mod-mail.
+Preparing to unpack .../4-libnginx-mod-mail_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking libnginx-mod-mail (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package libnginx-mod-stream.
+Preparing to unpack .../5-libnginx-mod-stream_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking libnginx-mod-stream (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package libnginx-mod-stream-geoip2.
+Preparing to unpack .../6-libnginx-mod-stream-geoip2_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking libnginx-mod-stream-geoip2 (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package nginx-core.
+Preparing to unpack .../7-nginx-core_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking nginx-core (1.18.0-6ubuntu14.7) ...
+Selecting previously unselected package nginx.
+Preparing to unpack .../8-nginx_1.18.0-6ubuntu14.7_amd64.deb ...
+Unpacking nginx (1.18.0-6ubuntu14.7) ...
+Setting up nginx-common (1.18.0-6ubuntu14.7) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service ? /lib/systemd/system/nginx.service.
+Setting up libnginx-mod-http-xslt-filter (1.18.0-6ubuntu14.7) ...
+Setting up libnginx-mod-http-geoip2 (1.18.0-6ubuntu14.7) ...
+Setting up libnginx-mod-mail (1.18.0-6ubuntu14.7) ...
+Setting up libnginx-mod-http-image-filter (1.18.0-6ubuntu14.7) ...
+Setting up libnginx-mod-stream (1.18.0-6ubuntu14.7) ...
+Setting up libnginx-mod-stream-geoip2 (1.18.0-6ubuntu14.7) ...
+Setting up nginx-core (1.18.0-6ubuntu14.7) ...
+ * Upgrading binary nginx
+Setting up nginx (1.18.0-6ubuntu14.7) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for ufw (0.36.1-4ubuntu0.1) ...
+Rules updated for profile 'Bind9'
+Skipped reloading firewall
+root@dns:~/simple-login# sudo systemctl status nginx
+? nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2025-10-16 22:49:41 IST; 8s ago
+       Docs: man:nginx(8)
+    Process: 29700 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 29701 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 29792 (nginx)
+      Tasks: 3 (limit: 9785)
+     Memory: 3.9M
+        CPU: 44ms
+     CGroup: /system.slice/nginx.service
+             +-29792 "nginx: master process /usr/sbin/nginx -g daemon on; master_process on;"
+             +-29794 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+             +-29795 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+
+Oct 16 22:49:41 dns systemd[1]: Starting A high performance web server and a reverse proxy server...
+Oct 16 22:49:41 dns systemd[1]: Started A high performance web server and a reverse proxy server.
+root@dns:~/simple-login#
+root@dns:~/simple-login# nano app.py
+root@dns:~/simple-login# cat app.py
+# app.py
+from flask import Flask, request, render_template_string, redirect, url_for
+
+app = Flask(__name__)
+
+# demo credentials (DO NOT use in production)
+DEMO_USER = "admin"
+DEMO_PASS = "P@ssw0rd"
+
+login_html = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f4f6f8;display:flex;align-items:center;justify-content:center;height:100vh;ma
+    .card{background:white;padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);width:320px}
+    input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:4px}
+    button{width:100%;padding:10px;margin-top:10px;border:0;border-radius:4px;background:#2563eb;color:white;font-weight:600}
+    .error{color:#b91c1c;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 12px 0">Please sign in</h2>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}">
+      <label for="username">Username</label>
+      <input id="username" name="username" required autofocus />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>
+"""
+
+success_html = """
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"/><title>Welcome</title></head>
+  <body style="font-family:Arial, sans-serif;display:flex;align-items:center;justify-content:center;height:100vh">
+    <div style="text-align:center;">
+      <h1>Welcome, {{ user }} ?</h1>
+      <p>You reached <strong>/login</strong> successfully.</p>
+    </div>
+  </body>
+</html>
+"""
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        u = request.form.get("username","")
+        p = request.form.get("password","")
+        if u == DEMO_USER and p == DEMO_PASS:
+            return render_template_string(success_html, user=u)
+        else:
+            return render_template_string(login_html, error="Invalid username or password.")
+    return render_template_string(login_html, error=None)
+
+# Optional root -> redirect to /login
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000)  # only HTTP internally
+
+root@dns:~/simple-login# sudo ./venv/bin/python app.py
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+^Croot@dns:~/simple-loginsudo nano /etc/nginx/sites-available/simple-loginin
+root@dns:~/simple-login# sudo cat /etc/nginx/sites-available/simple-login
+server {
+    listen 443 ssl;
+    server_name 192.168.0.128;  # or your DNS name
+
+    ssl_certificate /etc/ssl/localcerts/webapp.crt;
+    ssl_certificate_key /etc/ssl/localcerts/webapp.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;   # Flask app
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Optional: redirect HTTP to HTTPS
+server {
+    listen 80;
+    server_name 192.168.0.128;
+    return 301 https://$host$request_uri;
+}
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo ln -s /etc/nginx/sites-available/simple-login /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@dns:~/simple-login#
+root@dns:~/simple-login# sudo ./venv/bin/python app.py
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+
+^Croot@dns:~/simple-logincurl -vk https://192.168.0.128/loginin
+*   Trying 192.168.0.128:443...
+* Connected to 192.168.0.128 (192.168.0.128) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=IN; ST=State; L=City; O=Company; OU=IT; CN=webapp.localdomain.lan
+*  start date: Oct 16 17:04:11 2025 GMT
+*  expire date: Oct 16 17:04:11 2026 GMT
+*  issuer: C=IN; ST=State; L=City; O=Company; OU=IT; CN=webapp.localdomain.lan
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> GET /login HTTP/1.1
+> Host: 192.168.0.128
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 502 Bad Gateway
+< Server: nginx/1.18.0 (Ubuntu)
+< Date: Thu, 16 Oct 2025 17:21:27 GMT
+< Content-Type: text/html
+< Content-Length: 166
+< Connection: keep-alive
+<
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx/1.18.0 (Ubuntu)</center>
+</body>
+</html>
+* Connection #0 to host 192.168.0.128 left intact
+root@dns:~/simple-login# sudo ./venv/bin/python app.py
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+127.0.0.1 - - [16/Oct/2025 22:52:12] "GET /login HTTP/1.1" 200 -
+
+127.0.0.1 - - [16/Oct/2025 22:53:34] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 22:57:33] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 22:58:09] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 22:59:07] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 22:59:07] "GET /favicon.ico HTTP/1.0" 404 -
+127.0.0.1 - - [16/Oct/2025 22:59:36] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:03:01] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:03:02] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:03:29] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:03:29] "GET /favicon.ico HTTP/1.0" 404 -
+127.0.0.1 - - [16/Oct/2025 23:05:52] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:09:05] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:09:09] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:09:28] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:09:28] "GET /favicon.ico HTTP/1.0" 404 -
+127.0.0.1 - - [16/Oct/2025 23:16:52] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:16:54] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:16:54] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:16:56] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:17:00] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:17:05] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:17:20] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:17:21] "GET /favicon.ico HTTP/1.0" 404 -
+127.0.0.1 - - [16/Oct/2025 23:17:56] "GET /login HTTP/1.0" 200 -
+^Croot@dns:~/simple-login# sudo ./venv/bin/python app.py
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+127.0.0.1 - - [16/Oct/2025 23:18:06] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:18:07] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:18:28] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:18:28] "GET /favicon.ico HTTP/1.0" 404 -
+127.0.0.1 - - [16/Oct/2025 23:20:05] "GET /login HTTP/1.0" 200 -
+127.0.0.1 - - [16/Oct/2025 23:20:05] "GET /favicon.ico HTTP/1.0" 404 -

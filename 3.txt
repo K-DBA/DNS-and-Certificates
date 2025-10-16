@@ -1,0 +1,379 @@
+login as: code
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v23.6 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to code@192.168.0.128                                  ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (remote display is forwarded through SSH)  ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.8.0-85-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+244 updates can be applied immediately.
+168 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '24.04.3 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+*** System restart required ***
+Last login: Thu Oct 16 22:15:50 2025 from 192.168.0.134
+code@dns:~$ su -
+Password:
+code@dns:~$ su - root
+Password:
+root@dns:~#
+root@dns:~# vi /etc/bind/db.localdomain.lan
+root@dns:~# sudo nano /etc/bind/zones/db.localdomain.lan
+root@dns:~# sudo nano /etc/bind/zones/db.localdomain.lan
+root@dns:~# sudo cat /etc/bind/zones/db.localdomain.lan
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      3         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+dns     IN      A       192.168.0.128
+webapp     IN      A       192.168.0.128
+login      IN      A       192.168.0.128
+root@dns:~#
+root@dns:~# sudo rndc reload
+server reload successful
+root@dns:~#
+root@dns:~# sudo named-checkzone localdomain.lan /etc/bind/zones/db.localdomain.lan
+zone localdomain.lan/IN: loaded serial 3
+OK
+root@dns:~#
+root@dns:~# dig webapp.localdomain.lan @127.0.0.1
+dig login.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> webapp.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64765
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 72c852afdd51c7de0100000068f12419d1241cc9052fc7b6 (good)
+;; QUESTION SECTION:
+;webapp.localdomain.lan.                IN      A
+
+;; ANSWER SECTION:
+webapp.localdomain.lan. 604800  IN      A       192.168.0.128
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 22:28:01 IST 2025
+;; MSG SIZE  rcvd: 95
+
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> login.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 39026
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: b96e5df38ab207300100000068f124197b44be03161e11d0 (good)
+;; QUESTION SECTION:
+;login.localdomain.lan.         IN      A
+
+;; ANSWER SECTION:
+login.localdomain.lan.  604800  IN      A       192.168.0.128
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 22:28:01 IST 2025
+;; MSG SIZE  rcvd: 94
+
+root@dns:~# curl -vk http://127.0.0.1:5000/login
+*   Trying 127.0.0.1:5000...
+* Connected to 127.0.0.1 (127.0.0.1) port 5000 (#0)
+> GET /login HTTP/1.1
+> Host: 127.0.0.1:5000
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: Werkzeug/3.1.3 Python/3.10.12
+< Date: Thu, 16 Oct 2025 17:22:12 GMT
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 1127
+< Connection: close
+<
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f4f6f8;display:flex;align-items:center;justify-content:center;height:100vh;ma
+    .card{background:white;padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);width:320px}
+    input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:4px}
+    button{width:100%;padding:10px;margin-top:10px;border:0;border-radius:4px;background:#2563eb;color:white;font-weight:600}
+    .error{color:#b91c1c;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 12px 0">Please sign in</h2>
+
+    <form method="POST" action="/login">
+      <label for="username">Username</label>
+      <input id="username" name="username" required autofocus />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+* Closing connection 0
+</html>root@curl -vk https://192.168.0.128/login8/login
+*   Trying 192.168.0.128:443...
+* Connected to 192.168.0.128 (192.168.0.128) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=IN; ST=State; L=City; O=Company; OU=IT; CN=webapp.localdomain.lan
+*  start date: Oct 16 17:04:11 2025 GMT
+*  expire date: Oct 16 17:04:11 2026 GMT
+*  issuer: C=IN; ST=State; L=City; O=Company; OU=IT; CN=webapp.localdomain.lan
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> GET /login HTTP/1.1
+> Host: 192.168.0.128
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: nginx/1.18.0 (Ubuntu)
+< Date: Thu, 16 Oct 2025 17:23:34 GMT
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 1127
+< Connection: keep-alive
+<
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f4f6f8;display:flex;align-items:center;justify-content:center;height:100vh;ma
+    .card{background:white;padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);width:320px}
+    input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:4px}
+    button{width:100%;padding:10px;margin-top:10px;border:0;border-radius:4px;background:#2563eb;color:white;font-weight:600}
+    .error{color:#b91c1c;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 12px 0">Please sign in</h2>
+
+    <form method="POST" action="/login">
+      <label for="username">Username</label>
+      <input id="username" name="username" required autofocus />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+* Connection #0 to host 192.168.0.128 left intact
+</html>root@sudo ufw status status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere
+Bind9                      ALLOW       Anywhere
+80/tcp                     ALLOW       Anywhere
+8443/tcp                   ALLOW       Anywhere
+8443                       ALLOW       Anywhere
+22/tcp (v6)                ALLOW       Anywhere (v6)
+Bind9 (v6)                 ALLOW       Anywhere (v6)
+80/tcp (v6)                ALLOW       Anywhere (v6)
+8443/tcp (v6)              ALLOW       Anywhere (v6)
+8443 (v6)                  ALLOW       Anywhere (v6)
+
+root@dns:~# sudo ufw allow 443/tcp
+sudo ufw allow 80/tcp
+sudo ufw reload
+Rule added
+Rule added (v6)
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+
+Firewall reloaded
+root@dns:~#
+root@dns:~# sudo ss -tulnp | grep 443
+tcp   LISTEN 0      511                               0.0.0.0:443        0.0.0.0:*    users:(("nginx",pid=30507,fd=8),("nginx",p)
+root@dns:~# sudo systemctl restart nginx
+root@dns:~# ping 192.168.0.128
+PING 192.168.0.128 (192.168.0.128) 56(84) bytes of data.
+64 bytes from 192.168.0.128: icmp_seq=1 ttl=64 time=0.095 ms
+64 bytes from 192.168.0.128: icmp_seq=2 ttl=64 time=0.062 ms
+^C
+--- 192.168.0.128 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1059ms
+rtt min/avg/max/mdev = 0.062/0.078/0.095/0.016 ms
+root@dns:~# curl -vk https://192.168.0.128/login
+*   Trying 192.168.0.128:443...
+* Connected to 192.168.0.128 (192.168.0.128) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=IN; ST=State; L=City; O=Company; OU=IT; CN=webapp.localdomain.lan
+*  start date: Oct 16 17:04:11 2025 GMT
+*  expire date: Oct 16 17:04:11 2026 GMT
+*  issuer: C=IN; ST=State; L=City; O=Company; OU=IT; CN=webapp.localdomain.lan
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> GET /login HTTP/1.1
+> Host: 192.168.0.128
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: nginx/1.18.0 (Ubuntu)
+< Date: Thu, 16 Oct 2025 17:27:33 GMT
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 1127
+< Connection: keep-alive
+<
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f4f6f8;display:flex;align-items:center;justify-content:center;height:100vh;ma
+    .card{background:white;padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);width:320px}
+    input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:4px}
+    button{width:100%;padding:10px;margin-top:10px;border:0;border-radius:4px;background:#2563eb;color:white;font-weight:600}
+    .error{color:#b91c1c;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 12px 0">Please sign in</h2>
+
+    <form method="POST" action="/login">
+      <label for="username">Username</label>
+      <input id="username" name="username" required autofocus />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+* Connection #0 to host 192.168.0.128 left intact
+</html>root@dns:~#
+root@dns:~#
+root@dns:~# cat /etc/ssl/localcerts/webapp.crt
+-----BEGIN CERTIFICATE-----
+MIIDuTCCAqGgAwIBAgIUGONxUv3SXk6PzPHcxpB9r//vJ2MwDQYJKoZIhvcNAQEL
+BQAwbDELMAkGA1UEBhMCSU4xDjAMBgNVBAgMBVN0YXRlMQ0wCwYDVQQHDARDaXR5
+MRAwDgYDVQQKDAdDb21wYW55MQswCQYDVQQLDAJJVDEfMB0GA1UEAwwWd2ViYXBw
+LmxvY2FsZG9tYWluLmxhbjAeFw0yNTEwMTYxNzA0MTFaFw0yNjEwMTYxNzA0MTFa
+MGwxCzAJBgNVBAYTAklOMQ4wDAYDVQQIDAVTdGF0ZTENMAsGA1UEBwwEQ2l0eTEQ
+MA4GA1UECgwHQ29tcGFueTELMAkGA1UECwwCSVQxHzAdBgNVBAMMFndlYmFwcC5s
+b2NhbGRvbWFpbi5sYW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCz
+2H9eoPqGht6TiDuwbrue4ZKz06luoOPcxjPs1TKe+4lc1yOMTnM1cYS31TJX+ib4
+pw18Lmi8ifSS4V+Zx7gd5S4gx2I+S3MEC/G0vO+mcB9Ry8oBHCpZqZjRb+HEqh2j
+RMBx8+b6nhdyeW5Ar3Igpu3R5G4bm4DagW6pA7UZdbggj2NzcQ0n8rncuwOIgAId
+pDEEQ7iP6vYIO1vUq2Cya3NB+1tdLtvdN1XfSm992D74VA8TauiAsyrI0PX76v5Q
+35+YaEObKSNx/fpey7B7XN5zIltd15By6UDm/7PEHUAgNIj7g73yBya58Nv5AK7T
+pfu7U96f7FACv6n+gebRAgMBAAGjUzBRMB0GA1UdDgQWBBQ55JSkeHPvZEkZo0rj
+0+jTmbTL/zAfBgNVHSMEGDAWgBQ55JSkeHPvZEkZo0rj0+jTmbTL/zAPBgNVHRMB
+Af8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCn0QwisVnpboK1T+qHpFnph45B
+ytaZYrr6SsJeen67KNP0agNb4mbBpbSXu+RZEQ2qSag1ay8S3cMamsKLXmxnOSb4
+TeyN0iymLPROpfi18cj0jXyLjpXrNlvxrkI4ZiMwBRYkNyTUXnWFWXuSdNJ5lE/o
+ryV/5X7zWW02jlchLJZ+3rafQVOZOhxZgZ8xuojBVmtK4XdQ0QeHF+PvyFEVDpso
+zUQXZ3AoZJmgNWBqDIp7/zK0fKFSntHZCNlngzg50qkx4b1pYRnAJkc1WEPEKnCM
+rQHwDHpHBnTMY5riXa3b0+uEGngzliWelwS0Jdv/v7MaSJop6clIOLx0bMPG
+-----END CERTIFICATE-----
+root@dns:~#
+root@dns:~# cd /etc/ssl/localcerts/
+root@dns:/etc/ssl/localcerts# ls -ltr
+total 8
+-rw------- 1 root root 1704 Oct 16 22:34 webapp.key
+-rw-r--r-- 1 root root 1350 Oct 16 22:34 webapp.crt
+root@dns:/etc/ssl/localcerts#

@@ -1,0 +1,374 @@
+login as: code
+code@192.168.0.128's password:
+    +----------------------------------------------------------------------+
+    ¦                 • MobaXterm Personal Edition v23.6 •                 ¦
+    ¦               (SSH client, X server and network tools)               ¦
+    ¦                                                                      ¦
+    ¦ ? SSH session to code@192.168.0.128                                  ¦
+    ¦   • Direct SSH      :  ?                                             ¦
+    ¦   • SSH compression :  ?                                             ¦
+    ¦   • SSH-browser     :  ?                                             ¦
+    ¦   • X11-forwarding  :  ?  (remote display is forwarded through SSH)  ¦
+    ¦                                                                      ¦
+    ¦ ? For more info, ctrl+click on help or visit our website.            ¦
+    +----------------------------------------------------------------------+
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+/usr/bin/xauth:  file /home/code/.Xauthority does not exist
+code@dns:~$
+code@dns:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           824M  1.5M  822M   1% /run
+/dev/sda3        39G   11G   26G  30% /
+tmpfs           4.1G     0  4.1G   0% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+/dev/sda2       512M  6.1M  506M   2% /boot/efi
+tmpfs           824M  100K  824M   1% /run/user/1000
+code@dns:~$
+code@dns:~$ su - root
+Password:
+root@dns:~#
+root@dns:~# ip r s
+default via 192.168.0.1 dev enp0s3 proto dhcp metric 100
+default via 10.0.3.2 dev enp0s8 proto dhcp metric 101
+10.0.3.0/24 dev enp0s8 proto kernel scope link src 10.0.3.15 metric 101
+169.254.0.0/16 dev enp0s8 scope link metric 1000
+192.168.0.0/24 dev enp0s3 proto kernel scope link src 192.168.0.128 metric 100
+root@dns:~#
+root@dns:~# hostname
+dns
+root@dns:~#
+root@dns:~# hostnamectl
+ Static hostname: dns
+       Icon name: computer-vm
+         Chassis: vm
+      Machine ID: 989c4e81c74b4986b2001907326d738b
+         Boot ID: 78c8f9c375d6430ab66c696f5a350adb
+  Virtualization: oracle
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 6.8.0-85-generic
+    Architecture: x86-64
+ Hardware Vendor: innotek GmbH
+  Hardware Model: VirtualBox
+root@dns:~#
+root@dns:~# sudo nano /etc/netplan/01-netcfg.yaml
+root@dns:~# sudo cat /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.0.128/24]
+      nameservers:
+        addresses:
+      routes:
+        - to: default
+          via: 192.168.0.1
+root@dns:~#
+root@dns:~# sudo apt update
+Hit:1 http://in.archive.ubuntu.com/ubuntu jammy InRelease
+Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:3 http://in.archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:4 http://in.archive.ubuntu.com/ubuntu jammy-backports InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+263 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo apt install bind9 dnsutils bind9utils -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  bind9-dnsutils bind9-host bind9-libs bind9-utils
+Suggested packages:
+  bind-doc resolvconf
+The following NEW packages will be installed:
+  bind9 bind9-utils bind9utils dnsutils
+The following packages will be upgraded:
+  bind9-dnsutils bind9-host bind9-libs
+3 upgraded, 4 newly installed, 0 to remove and 260 not upgraded.
+Need to get 434 kB/1,908 kB of archives.
+After this operation, 1,831 kB of additional disk space will be used.
+Get:1 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 bind9-utils amd64 1:9.18.39-0ubuntu0.22.04.1 [162 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu jammy-updates/main amd64 bind9 amd64 1:9.18.39-0ubuntu0.22.04.1 [265 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 bind9utils all 1:9.18.39-0ubuntu0.22.04.1 [3,920 B]
+Get:4 http://in.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 dnsutils all 1:9.18.39-0ubuntu0.22.04.1 [3,916 B]
+Fetched 434 kB in 2s (258 kB/s)
+(Reading database ... 182911 files and directories currently installed.)
+Preparing to unpack .../0-bind9-host_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-host (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Preparing to unpack .../1-bind9-dnsutils_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-dnsutils (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Preparing to unpack .../2-bind9-libs_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-libs:amd64 (1:9.18.39-0ubuntu0.22.04.1) over (1:9.18.28-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9-utils.
+Preparing to unpack .../3-bind9-utils_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9-utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9.
+Preparing to unpack .../4-bind9_1%3a9.18.39-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking bind9 (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package bind9utils.
+Preparing to unpack .../5-bind9utils_1%3a9.18.39-0ubuntu0.22.04.1_all.deb ...
+Unpacking bind9utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Selecting previously unselected package dnsutils.
+Preparing to unpack .../6-dnsutils_1%3a9.18.39-0ubuntu0.22.04.1_all.deb ...
+Unpacking dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-libs:amd64 (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9 (1:9.18.39-0ubuntu0.22.04.1) ...
+Adding group `bind' (GID 137) ...
+Done.
+Adding system user `bind' (UID 130) ...
+Adding new user `bind' (UID 130) with group `bind' ...
+Not creating home directory `/var/cache/bind'.
+wrote key file "/etc/bind/rndc.key"
+named-resolvconf.service is a disabled or a static unit, not starting it.
+Created symlink /etc/systemd/system/bind9.service ? /lib/systemd/system/named.service.
+Created symlink /etc/systemd/system/multi-user.target.wants/named.service ? /lib/systemd/system/named.service.
+Setting up bind9utils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-host (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up bind9-dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Setting up dnsutils (1:9.18.39-0ubuntu0.22.04.1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+Processing triggers for ufw (0.36.1-4ubuntu0.1) ...
+Processing triggers for man-db (2.10.2-1) ...
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.options
+root@dns:~# sudo cat /etc/bind/named.conf.options
+options {
+    directory "/var/cache/bind";
+    allow-query { localhost; 192.168.0.0/24; };
+    recursion yes;
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+    };
+};
+root@dns:~#
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.local
+root@dns:~# sudo cat /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+// Define a forward lookup zone for your local domain
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/db.localdomain.lan";
+};
+
+// Define a reverse lookup zone for your local network (192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.0";
+};
+root@dns:~#
+root@dns:~# sudo mkdir /etc/bind/zones
+root@dns:~#
+root@dns:~# sudo cp /etc/bind/db.local /etc/bind/zones/db.localdomain.lan
+sudo cp /etc/bind/db.127 /etc/bind/zones/db.192.168.0
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/zones/db.localdomain.lan
+root@dns:~# sudo cat /etc/bind/zones/db.localdomain.lan
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      2         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+dns     IN      A       192.168.0.128
+
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/zones/db.192.168.0
+root@dns:~# sudo cat /etc/bind/zones/db.192.168.0
+$TTL 604800
+@       IN      SOA     dns.localdomain.lan. root.localdomain.lan. (
+                      2         ; Serial
+                 604800         ; Refresh
+                  86400         ; Retry
+                2419200         ; Expire
+                 604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.localdomain.lan.
+128     IN      PTR     dns.localdomain.lan.
+
+root@dns:~#
+root@dns:~# sudo named-checkconf
+root@dns:~#
+root@dns:~# sudo named-checkzone localdomain.lan /etc/bind/zones/db.localdomain.lan
+sudo named-checkzone 0.168.192.in-addr.arpa /etc/bind/zones/db.192.168.0
+zone localdomain.lan/IN: loaded serial 2
+OK
+zone 0.168.192.in-addr.arpa/IN: loaded serial 2
+OK
+root@dns:~# sudo systemctl restart bind9
+root@dns:~#
+root@dns:~# sudo ufw allow Bind9
+sudo ufw reload
+Rule added
+Rule added (v6)
+
+Firewall reloaded
+root@dns:~#
+root@dns:~#
+root@dns:~# dig dns.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> dns.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 51457
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 0a0e1e80ef3e1a9b0100000068f11c4a2ded8ecb900764de (good)
+;; QUESTION SECTION:
+;dns.localdomain.lan.           IN      A
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:54:42 IST 2025
+;; MSG SIZE  rcvd: 76
+
+root@dns:~# sudo chown -R bind:bind /etc/bind/zones
+root@dns:~# sudo chmod -R 755 /etc/bind/zones
+root@dns:~#
+root@dns:~# sudo nano /etc/bind/named.conf.local
+root@dns:~# sudo cat /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+// Define a forward lookup zone for your local domain
+zone "localdomain.lan" {
+    type master;
+    file "/etc/bind/zones/db.localdomain.lan";
+};
+
+// Define a reverse lookup zone for your local network (192.168.0.0/24)
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.192.168.0";
+};
+
+root@dns:~# sudo systemctl restart bind9
+root@dns:~#
+root@dns:~# sudo systemctl status bind9
+? named.service - BIND Domain Name Server
+     Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2025-10-16 21:56:21 IST; 4s ago
+       Docs: man:named(8)
+    Process: 7251 ExecStart=/usr/sbin/named $OPTIONS (code=exited, status=0/SUCCESS)
+   Main PID: 7258 (named)
+      Tasks: 6 (limit: 9785)
+     Memory: 23.0M
+        CPU: 85ms
+     CGroup: /system.slice/named.service
+             +-7258 /usr/sbin/named -u bind
+
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 192.203.230.10#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 202.12.27.33#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 202.12.27.33#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 192.36.148.17#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 192.36.148.17#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 170.247.170.2#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 170.247.170.2#53
+Oct 16 21:56:21 dns named[7258]: DNS format error from 199.7.83.42#53 resolving ./NS for <unknown>: non-improving referral
+Oct 16 21:56:21 dns named[7258]: FORMERR resolving './NS/IN': 199.7.83.42#53
+Oct 16 21:56:21 dns named[7258]: resolver priming query complete: failure
+root@dns:~#
+root@dns:~# sudo journalctl -u bind9 --no-pager
+-- No entries --
+root@dns:~#
+root@dns:~# dig dns.localdomain.lan @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> dns.localdomain.lan @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 58105
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 7ada8c4cc857421b0100000068f11cbdcecb15debddf237c (good)
+;; QUESTION SECTION:
+;dns.localdomain.lan.           IN      A
+
+;; ANSWER SECTION:
+dns.localdomain.lan.    604800  IN      A       192.168.0.128
+
+;; Query time: 2 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:56:37 IST 2025
+;; MSG SIZE  rcvd: 92
+
+root@dns:~#
+root@dns:~# dig google.com @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> google.com @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35925
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 8bac8ba11df9e54b0100000068f11cf085ab39e58dd63277 (good)
+;; QUESTION SECTION:
+;google.com.                    IN      A
+
+;; ANSWER SECTION:
+google.com.             208     IN      A       142.250.70.46
+
+;; Query time: 51 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:57:28 IST 2025
+;; MSG SIZE  rcvd: 83
+
+root@dns:~#
+root@dns:~# dig -x 192.168.0.128 @127.0.0.1
+
+; <<>> DiG 9.18.39-0ubuntu0.22.04.1-Ubuntu <<>> -x 192.168.0.128 @127.0.0.1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 24403
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: c25cfdf4988d5c040100000068f11d7c92889b8d1fcde384 (good)
+;; QUESTION SECTION:
+;128.0.168.192.in-addr.arpa.    IN      PTR
+
+;; ANSWER SECTION:
+128.0.168.192.in-addr.arpa. 604800 IN   PTR     dns.localdomain.lan.
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Thu Oct 16 21:59:48 IST 2025
+;; MSG SIZE  rcvd: 116
+
+root@dns:~#
+root@dns:~#
